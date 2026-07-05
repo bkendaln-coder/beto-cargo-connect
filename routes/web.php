@@ -5,7 +5,9 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\DashboardController;
 
-Route::view('/', 'welcome')->name('home');
+Route::get('/', function () {
+    return redirect()->route('customers.index');
+});
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->name('dashboard');

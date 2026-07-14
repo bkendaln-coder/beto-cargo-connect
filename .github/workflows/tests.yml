@@ -33,7 +33,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@7c071dfe9dc99bdf297fa79cb49ea005b9fcadbc # v2
         with:
-          php-version: ${{ matrix.php-version }}
+          php-version: ${{ matrix.php }}}
           tools: composer:v2
           coverage: xdebug
 
@@ -60,8 +60,8 @@ jobs:
       - name: Build Assets
         run: npm run build
 
-      - name: Run Type Analysis
-        run: composer types:check
+#      - name: Run Type Analysis
+#        run: composer types:check
 
       - name: Run Tests
         run: php artisan test

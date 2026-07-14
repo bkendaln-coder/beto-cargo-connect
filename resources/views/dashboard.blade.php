@@ -18,6 +18,14 @@
             <a class="nav-link" href="{{ route('customers.index') }}">Clients</a>
             <a class="nav-link" href="{{ route('packages.index') }}">Colis</a>
             <a class="nav-link" href="{{ route('packages.create') }}">Ajouter colis</a>
+
+            <form method="POST" action="{{ route('logout') }}" class="d-inline">
+                @csrf
+                <button type="submit" class="nav-link btn btn-link border-0 text-decoration-none">
+                    Déconnexion
+                </button>
+            </form>
+
         </div>
     </div>
 </nav>

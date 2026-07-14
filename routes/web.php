@@ -7,25 +7,39 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AgencyController;
 
 Route::get('/', function () {
-    return redirect()->route('customers.index');
+    return redirect()->route('login');
 })->name('home');
 
-Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->middleware('auth')
-    ->name('dashboard');
+/*
+|--------------------------------------------------------------------------
+| Routes protégées (connexion obligatoire)
+|--------------------------------------------------------------------------
+*/
 
-Route::resource('customers', CustomerController::class);
+Route::middleware('auth')->group(function () {
 
-Route::resource('packages', PackageController::class);
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
 
-Route::resource('agencies', AgencyController::class);
+    Route::resource('customers', CustomerController::class);
 
-Route::get('/agencies/{agency}/select', [AgencyController::class, 'select'])
-    ->middleware('auth')
-    ->name('agencies.select');
+    Route::resource('packages', PackageController::class);
 
-Route::get('/packages/{package}/receipt', [PackageController::class, 'receipt'])
-    ->name('packages.receipt');
+    Route::resource('agencies', AgencyController::class);
+
+    Route::get('/agencies/{agency}/select', [AgencyController::class, 'select'])
+        ->name('agencies.select');
+
+    Route::get('/packages/{package}/receipt', [PackageController::class, 'receipt'])
+        ->name('packages.receipt');
+
+});
+
+/*
+|--------------------------------------------------------------------------
+| Routes publiques
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/{agency:slug}/track', [PackageController::class, 'trackForm'])
     ->name('packages.track.form');
@@ -35,5 +49,5 @@ Route::post('/{agency:slug}/track', [PackageController::class, 'trackSearch'])
 
 Route::get('/{agency:slug}/track/{tracking_number}', [PackageController::class, 'track'])
     ->name('packages.track');
-    
+
 require __DIR__.'/settings.php';

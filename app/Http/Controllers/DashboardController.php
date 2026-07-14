@@ -9,12 +9,22 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $totalCustomers = Customer::count();
-        $totalPackages = Package::count();
-        $receivedPackages = Package::where('status', 'received')->count();
-        $inTransitPackages = Package::where('status', 'in_transit')->count();
-        $arrivedPackages = Package::where('status', 'arrived')->count();
-        $deliveredPackages = Package::where('status', 'delivered')->count();
+        if (auth()->check() && auth()->user()->agency) {
+            session([
+                'agency_id' => auth()->user()->agency_id,
+                'agency_name' => auth()->user()->agency->name,
+            ]);
+        }
+        
+        $agencyId = session('agency_id');
+
+        $totalCustomers = Customer::where('agency_id', $agencyId)->count();
+        $totalPackages = Package::where('agency_id', $agencyId)->count();
+
+        $receivedPackages = Package::where('agency_id', $agencyId)->where('status', 'received')->count();
+        $inTransitPackages = Package::where('agency_id', $agencyId)->where('status', 'in_transit')->count();
+        $arrivedPackages = Package::where('agency_id', $agencyId)->where('status', 'arrived')->count();
+        $deliveredPackages = Package::where('agency_id', $agencyId)->where('status', 'delivered')->count();
 
         return view('dashboard', compact(
             'totalCustomers',

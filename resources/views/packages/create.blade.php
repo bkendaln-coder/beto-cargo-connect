@@ -26,7 +26,9 @@
 
     <div class="mb-4">
         <h1>Ajouter un colis</h1>
-        <p class="text-muted">Créer un nouveau colis pour expédition Canada → RDC</p>
+        <p class="text-muted">
+            Créer un nouveau colis pour {{ session('agency_name') }}
+        </p>
     </div>
 
     <div class="card shadow-sm">

@@ -4,10 +4,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AgencyController;
 
 Route::get('/', function () {
     return redirect()->route('customers.index');
-});
+})->name('home');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->name('dashboard');
@@ -16,16 +17,22 @@ Route::resource('customers', CustomerController::class);
 
 Route::resource('packages', PackageController::class);
 
+Route::resource('agencies', AgencyController::class);
+
+Route::get('/agencies/{agency}/select', [AgencyController::class, 'select'])
+    ->middleware('auth')
+    ->name('agencies.select');
+
 Route::get('/packages/{package}/receipt', [PackageController::class, 'receipt'])
     ->name('packages.receipt');
 
-Route::get('/track/{tracking_number}', [PackageController::class, 'track'])
-    ->name('packages.track');
-
-Route::get('/track', [PackageController::class, 'trackForm'])
+Route::get('/{agency:slug}/track', [PackageController::class, 'trackForm'])
     ->name('packages.track.form');
 
-Route::post('/track', [PackageController::class, 'trackSearch'])
+Route::post('/{agency:slug}/track', [PackageController::class, 'trackSearch'])
     ->name('packages.track.search');
+
+Route::get('/{agency:slug}/track/{tracking_number}', [PackageController::class, 'track'])
+    ->name('packages.track');
     
 require __DIR__.'/settings.php';

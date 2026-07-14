@@ -14,6 +14,7 @@ use Illuminate\Support\Str;
 use Laravel\Fortify\Contracts\PasskeyUser;
 use Laravel\Fortify\PasskeyAuthenticatable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
+use App\Models\Agency;
 
 /**
  * @property int $id
@@ -28,7 +29,12 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['name', 'email', 'password'])]
+#[Fillable([
+    'name',
+    'email',
+    'password',
+    'agency_id',
+])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable implements PasskeyUser
 {
@@ -51,6 +57,12 @@ class User extends Authenticatable implements PasskeyUser
     /**
      * Get the user's initials
      */
+
+    public function agency()
+    {
+        return $this->belongsTo(Agency::class);
+    }
+    
     public function initials(): string
     {
         return Str::of($this->name)

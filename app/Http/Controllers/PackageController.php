@@ -6,6 +6,7 @@ use App\Models\Package;
 use App\Models\Customer;
 use App\Models\PackageStatusHistory;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class PackageController extends Controller
 {
@@ -14,22 +15,20 @@ class PackageController extends Controller
             $search = $request->search;
 
             $packages = Package::with('customer')
+                ->where('agency_id', session('agency_id'))
 
                 ->when($search, function ($query) use ($search) {
-
-                    $query->where('tracking_number', 'like', "%{$search}%")
-
-                        ->orWhere('origin_city', 'like', "%{$search}%")
-
-                        ->orWhere('destination_city', 'like', "%{$search}%")
-
-                        ->orWhereHas('customer', function ($customer) use ($search) {
-
-                                $customer->where('first_name', 'like', "%{$search}%")
-                                         ->orWhere('last_name', 'like', "%{$search}%");
-
-                        });
-
+                    $query->where(function ($searchQuery) use ($search) {
+                        $searchQuery
+                            ->where('tracking_number', 'like', "%{$search}%")
+                            ->orWhere('origin_city', 'like', "%{$search}%")
+                            ->orWhere('destination_city', 'like', "%{$search}%")
+                            ->orWhereHas('customer', function ($customerQuery) use ($search) {
+                                $customerQuery
+                                    ->where('first_name', 'like', "%{$search}%")
+                                    ->orWhere('last_name', 'like', "%{$search}%");
+                            });
+                    });
                 })
 
                 ->latest()
@@ -41,7 +40,9 @@ class PackageController extends Controller
 
     public function create()
     {
-        $customers = Customer::orderBy('first_name')->get();
+        $customers = Customer::where('agency_id', session('agency_id'))
+            ->orderBy('first_name')
+            ->get();
 
         return view('packages.create', compact('customers'));
     }
@@ -49,7 +50,11 @@ class PackageController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'customer_id' => 'required|exists:customers,id',
+            'customer_id' => [
+                'required',
+                Rule::exists('customers', 'id')
+                    ->where(fn ($query) => $query->where('agency_id', session('agency_id'))),
+            ],
             'description' => 'required|string|max:255',
             'weight_kg' => 'nullable|numeric',
             'transport_mode' => 'required',
@@ -72,6 +77,7 @@ class PackageController extends Controller
         $package = Package::create([
             'tracking_number' => $trackingNumber,
             'customer_id' => $validated['customer_id'],
+            'agency_id' => session('agency_id'),
             'description' => $validated['description'],
             'weight_kg' => $validated['weight_kg'],
             'transport_mode' => $validated['transport_mode'],
@@ -93,16 +99,35 @@ class PackageController extends Controller
 
     public function show(Package $package)
     {
-        //
+        abort_if(
+            $package->agency_id !== session('agency_id'),
+            403,
+            'Accès interdit.'
+        );
+
+        return view('packages.show', compact('package'));
     }
 
     public function edit(Package $package)
     {
+        abort_if(
+            $package->agency_id !== session('agency_id'),
+            403,
+            'Accès interdit.'
+        );
+
         return view('packages.edit', compact('package'));
     }
 
     public function update(Request $request, Package $package)
     {
+
+        abort_if(
+            $package->agency_id !== session('agency_id'),
+            403,
+            'Accès interdit.'
+        );
+
         $request->validate([
             'status' => 'required'
         ]);
@@ -121,47 +146,66 @@ class PackageController extends Controller
             ]);
         }
 
-        return redirect()
-            ->route('packages.index')
-            ->with('success', 'Statut mis à jour avec succès.');
+        return view('packages.update-success', compact('package'));
     }
 
     public function destroy(Package $package)
     {
-        //
+        abort_if(
+            $package->agency_id !== session('agency_id'),
+            403,
+            'Accès interdit.'
+        );
+
+        $package->delete();
+
+        return redirect()
+            ->route('packages.index')
+            ->with('success', 'Colis supprimé avec succès.');
     }
 
-    public function track($tracking_number)
+    public function track(\App\Models\Agency $agency, $tracking_number)
     {
         $package = Package::with([
             'customer',
             'statusHistory'
         ])
+        ->where('agency_id', $agency->id)
         ->where('tracking_number', $tracking_number)
         ->firstOrFail();
 
-        return view('packages.track', compact('package'));
+        return view('packages.track', compact('package', 'agency'));
     }
 
-    public function trackForm()
+    public function trackForm(\App\Models\Agency $agency)
     {
-        return view('packages.track-search');
+        return view('packages.track-search', compact('agency'));
     }
 
-    public function trackSearch(Request $request)
+    public function trackSearch(Request $request, \App\Models\Agency $agency)
     {
         $request->validate([
-            'tracking_number' => 'required|string'
-    ]);
+            'tracking_number' => 'required|string',
+        ]);
 
-    return redirect()->route('packages.track', $request->tracking_number);
+        return redirect()->route('packages.track', [
+            'agency' => $agency->slug,
+            'tracking_number' => $request->tracking_number,
+        ]);
     }
+
 
     public function receipt(Package $package)
     {
+        abort_if(
+            $package->agency_id !== session('agency_id'),
+            403,
+            'Accès interdit.'
+        );
+
         $package->load('customer');
 
         return view('packages.receipt', compact('package'));
-    }
+    }   
 
 }

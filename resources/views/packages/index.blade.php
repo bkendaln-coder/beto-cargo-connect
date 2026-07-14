@@ -27,7 +27,9 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h1 class="mb-0">Beto Cargo Connect</h1>
-            <p class="text-muted">Gestion des colis Canada → RDC</p>
+            <p class="text-muted">
+                Gestion des colis de {{ session('agency_name') }}
+            </p>
         </div>
 
         <a href="{{ route('packages.create') }}" class="btn btn-primary">
@@ -86,7 +88,10 @@
                         <tr>
                             <td>
                                 <strong>{{ $package->tracking_number }}</strong><br>
-                                <a href="{{ route('packages.track', $package->tracking_number) }}" target="_blank">
+                                <a href="{{ route('packages.track', [
+                                    'agency' => $package->agency->slug,
+                                    'tracking_number' => $package->tracking_number,
+                                ]) }}" target="_blank">
                                     Suivi public
                                 </a>
                             </td>
@@ -148,9 +153,14 @@
                                         $package->customer->first_name .
                                         ', votre colis ' .
                                         $package->tracking_number .
-                                        ' a été enregistré chez T.L.S. (Toronto Line Shipping).' .
+                                        ' a été enregistré chez ' .
+                                        $package->agency->name .
+                                        '.' .
                                         "\n\nSuivi : " .
-                                        route('packages.track', $package->tracking_number)
+                                        route('packages.track', [
+                                            'agency' => $package->agency->slug,
+                                            'tracking_number' => $package->tracking_number,
+                                        ])
                                     ) }}"
                                     target="_blank"
                                     class="btn btn-success btn-sm">

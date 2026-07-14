@@ -26,9 +26,9 @@
 
             <div class="text-center mb-4">
 
-                <h2>🚢 T.L.S.</h2>
+                <h2>🚢 {{ $package->agency->name }}</h2>
 
-                <h4>Toronto Line Shipping</h4>
+                <h4>{{ $package->agency->city }} - {{ $package->agency->country }}</h4>
 
                 <p>
                     Canada 🇨🇦 → RDC 🇨🇩
@@ -91,7 +91,7 @@
 
                 <p>
                     Merci d'avoir choisi
-                    <strong>T.L.S. (Toronto Line Shipping)</strong>
+                    <strong>{{ $package->agency->name }}</strong>
                 </p>
 
                 <p class="text-muted">

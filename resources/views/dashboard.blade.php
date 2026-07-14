@@ -26,7 +26,16 @@
 
     <div class="mb-4">
         <h1>Beto Cargo Connect</h1>
-        <p class="text-muted">Tableau de bord logistique Canada → RDC</p>
+        <p class="text-muted">
+            Tableau de bord logistique de {{ session('agency_name') }}
+        </p>
+
+        @if(session('agency_name'))
+            <div class="alert alert-info">
+                Agence active : <strong>{{ session('agency_name') }}</strong>
+            </div>
+        @endif
+        
     </div>
 
     <div class="row g-4">

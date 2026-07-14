@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Agency;
 
 class Customer extends Model
 {
@@ -14,11 +15,17 @@ class Customer extends Model
         'address',
         'city',
         'country',
+        'agency_id',
     ];
 
     public function packages()
     {
         return $this->hasMany(Package::class);
      }
+
+    public function agency()
+    {
+        return $this->belongsTo(Agency::class);
+    }
 
 }

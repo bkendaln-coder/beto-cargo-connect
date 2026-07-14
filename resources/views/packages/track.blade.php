@@ -11,7 +11,9 @@
 
     <div class="text-center mb-4">
         <h1>Beto Cargo Connect</h1>
-        <p class="text-muted">Suivi public de colis Canada → RDC</p>
+        <p class="text-muted">
+            Suivi public de colis - {{ $agency->name }}
+        </p>
     </div>
 
     <div class="card shadow-sm mb-4">
@@ -69,43 +71,97 @@
 
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white">
-            Progression du colis
+             Progression du colis
         </div>
 
         <div class="card-body">
-            <ul class="list-group">
 
-                <li class="list-group-item">
-                    ✅ Colis reçu
-                </li>
+          @php
+            $steps = [
+                'received' => [
+                    'label' => 'Colis reçu',
+                    'icon' => '📦',
+                ],
+                'in_transit' => [
+                    'label' => 'En transit',
+                    'icon' => '🚚',
+                ],
+                'arrived' => [
+                    'label' => 'Arrivé à destination',
+                    'icon' => '📍',
+                ],
+                'delivered' => [
+                    'label' => 'Livré au destinataire',
+                    'icon' => '✅',
+                ],
+            ];
 
-                <li class="list-group-item">
-                    @if(in_array($package->status, ['in_transit', 'arrived', 'delivered']))
-                        ✅ En transit
-                    @else
-                        ⏳ En attente de départ
+            $statusOrder = array_keys($steps);
+            $currentPosition = array_search($package->status, $statusOrder);
+          @endphp
+
+        <div class="list-group">
+
+            @foreach($steps as $status => $step)
+
+                @php
+                    $stepPosition = array_search($status, $statusOrder);
+                    $history = $package->statusHistory->firstWhere('status', $status);
+
+                    $isCompleted = $currentPosition !== false
+                        && $stepPosition <= $currentPosition;
+
+                    $isCurrent = $package->status === $status;
+                @endphp
+
+                <div class="list-group-item py-3">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+                            <span class="fs-4 me-2">
+                                {{ $step['icon'] }}
+                            </span>
+
+                            <strong>
+                                {{ $step['label'] }}
+                            </strong>
+
+                            @if($isCurrent)
+                                <span class="badge bg-primary ms-2">
+                                    Statut actuel
+                                </span>
+                            @endif
+                        </div>
+
+                        <div>
+                            @if($isCompleted)
+                                <span class="badge bg-success">
+                                    Terminé
+                                </span>
+                            @else
+                                <span class="badge bg-secondary">
+                                    En attente
+                                </span>
+                            @endif
+                        </div>
+
+                    </div>
+
+                    @if($history)
+                        <small class="text-muted d-block mt-2">
+                            {{ $history->created_at->format('d/m/Y à H:i') }}
+                        </small>
                     @endif
-                </li>
 
-                <li class="list-group-item">
-                    @if(in_array($package->status, ['arrived', 'delivered']))
-                        ✅ Arrivé à destination
-                    @else
-                        ⏳ Pas encore arrivé
-                    @endif
-                </li>
+                </div>
 
-                <li class="list-group-item">
-                    @if($package->status === 'delivered')
-                        ✅ Livré au destinataire
-                    @else
-                        ⏳ En attente de livraison
-                    @endif
-                </li>
+            @endforeach
 
-            </ul>
         </div>
+
     </div>
+</div>
 
     <div class="mt-4 text-center">
 

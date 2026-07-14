@@ -11,14 +11,18 @@ class CustomerController extends Controller
     {
         $search = $request->search;
 
-        $customers = Customer::when($search, function ($query) use ($search) {
-            $query->where('first_name', 'like', "%{$search}%")
-                  ->orWhere('last_name', 'like', "%{$search}%")
-                  ->orWhere('phone', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('city', 'like', "%{$search}%")
-                  ->orWhere('country', 'like', "%{$search}%");
-        })
+        $customers = Customer::where('agency_id', session('agency_id'))
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($searchQuery) use ($search) {
+                    $searchQuery
+                        ->where('first_name', 'like', "%{$search}%")
+                        ->orWhere('last_name', 'like', "%{$search}%")
+                        ->orWhere('phone', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%")
+                        ->orWhere('city', 'like', "%{$search}%")
+                        ->orWhere('country', 'like', "%{$search}%");
+                });
+            })
         ->latest()
         ->get();
 
@@ -42,6 +46,8 @@ class CustomerController extends Controller
             'country' => 'nullable|string|max:255',
         ]);
 
+        $validated['agency_id'] = session('agency_id');
+        
         Customer::create($validated);
 
         return redirect()->route('customers.index')
@@ -50,16 +56,34 @@ class CustomerController extends Controller
 
     public function show(Customer $customer)
     {
+        abort_if(
+            $customer->agency_id !== session('agency_id'),
+            403,
+            'Accès interdit.'
+        );
+
         return view('customers.show', compact('customer'));
     }
 
     public function edit(Customer $customer)
     {
+        abort_if(
+            $customer->agency_id !== session('agency_id'),
+            403,
+            'Accès interdit.'
+        );
+
         return view('customers.edit', compact('customer'));
     }
 
     public function update(Request $request, Customer $customer)
     {
+        abort_if(
+            $customer->agency_id !== session('agency_id'),
+            403,
+            'Accès interdit.'
+        );
+
         $validated = $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
@@ -78,6 +102,12 @@ class CustomerController extends Controller
 
     public function destroy(Customer $customer)
     {
+        abort_if(
+            $customer->agency_id !== session('agency_id'),
+            403,
+            'Accès interdit.'
+        );
+
         $customer->delete();
 
         return redirect()->route('customers.index')

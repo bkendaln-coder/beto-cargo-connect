@@ -3,12 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Agency;
 
 class Package extends Model
 {
     protected $fillable = [
         'tracking_number',
         'customer_id',
+        'agency_id',
         'description',
         'weight_kg',
         'transport_mode',
@@ -26,6 +28,11 @@ class Package extends Model
     {
         return $this->hasMany(PackageStatusHistory::class)
                 ->latest();
+    }
+
+    public function agency()
+    {
+        return $this->belongsTo(Agency::class);
     }
 
 }

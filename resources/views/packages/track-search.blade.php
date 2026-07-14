@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Suivi de colis - T.L.S.</title>
+    <title>Suivi de colis - {{ $agency->name }}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
@@ -22,7 +22,7 @@
                 <div class="card-body">
 
                     <h3 class="mb-3">
-                        🚢 T.L.S. (Toronto Line Shipping)
+                        🚢 {{ $agency->name }}
                     </h3>
 
                     <p class="text-muted">
@@ -30,7 +30,7 @@
                     </p>
 
                     <form method="POST"
-                          action="{{ route('packages.track.search') }}">
+                          action="{{ route('packages.track.search', ['agency' => $agency->slug]) }}">
                         @csrf
 
                         <div class="mb-3">

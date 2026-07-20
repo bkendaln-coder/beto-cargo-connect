@@ -28,6 +28,7 @@ class AgencyController extends Controller
             'name' => 'required|string|max:255',
             'phone' => 'nullable|string|max:50',
             'email' => 'nullable|email|max:255',
+            'website' => 'nullable|url|max:255',
             'city' => 'nullable|string|max:255',
             'country' => 'nullable|string|max:255',
         ]);
@@ -45,7 +46,7 @@ class AgencyController extends Controller
         return view('agencies.show', compact('agency'));
     }
 
-    public function show(Agency $agency): View
+    public function edit(Agency $agency): View
     {
         return view('agencies.edit', compact('agency'));
     }
@@ -56,6 +57,7 @@ class AgencyController extends Controller
             'name' => 'required|string|max:255',
             'phone' => 'nullable|string|max:50',
             'email' => 'nullable|email|max:255',
+            'website' => 'nullable|url|max:255',
             'city' => 'nullable|string|max:255',
             'country' => 'nullable|string|max:255',
         ]);
@@ -79,8 +81,8 @@ class AgencyController extends Controller
     public function select(Agency $agency): RedirectResponse
     {
         abort_if(
-            auth()->check() &&
-            auth()->user()->agency_id !== $agency->id,
+            auth()->user()->role !== 'super_admin'
+            && auth()->user()->agency_id !== $agency->id,
             403,
             'Vous ne pouvez pas accéder à cette agence.'
         );
@@ -88,6 +90,7 @@ class AgencyController extends Controller
         session([
             'agency_id' => $agency->id,
             'agency_name' => $agency->name,
+            'agency_website' => $agency->website,
         ]);
 
         return redirect()->route('dashboard')

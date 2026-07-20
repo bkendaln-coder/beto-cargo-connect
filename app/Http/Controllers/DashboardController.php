@@ -9,7 +9,11 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        if (auth()->check() && auth()->user()->agency) {
+        if (
+            auth()->check()
+            && auth()->user()->role !== 'super_admin'
+            && auth()->user()->agency
+        ) {
             session([
                 'agency_id' => auth()->user()->agency_id,
                 'agency_name' => auth()->user()->agency->name,

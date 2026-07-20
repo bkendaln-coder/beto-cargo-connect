@@ -5,6 +5,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AgencyController;
+use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -25,10 +26,14 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('packages', PackageController::class);
 
-    Route::resource('agencies', AgencyController::class);
+    Route::middleware('super_admin')->group(function () {
+        Route::resource('agencies', AgencyController::class);
 
-    Route::get('/agencies/{agency}/select', [AgencyController::class, 'select'])
+        Route::get('/agencies/{agency}/select', [AgencyController::class, 'select'])
         ->name('agencies.select');
+
+        Route::resource('users', UserController::class);
+    });
 
     Route::get('/packages/{package}/receipt', [PackageController::class, 'receipt'])
         ->name('packages.receipt');

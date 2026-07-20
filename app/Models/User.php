@@ -34,6 +34,7 @@ use App\Models\Agency;
     'email',
     'password',
     'agency_id',
+    'role',
 ])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable implements PasskeyUser

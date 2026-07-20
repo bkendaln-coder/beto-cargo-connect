@@ -48,9 +48,13 @@
 
                 <td>{{ $agency->country }}</td>
 
-                 <td>
+                <td>
                     <a href="{{ route('agencies.select', $agency) }}" class="btn btn-success btn-sm">
                         Entrer
+                    </a>
+
+                    <a href="{{ route('agencies.edit', $agency) }}" class="btn btn-warning btn-sm">
+                        Modifier
                     </a>
                 </td>
 

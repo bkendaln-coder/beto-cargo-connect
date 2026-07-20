@@ -1,49 +1,29 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Dashboard - Beto Cargo Connect</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
+@extends('layouts.agency')
 
-<body class="bg-light">
+@section('title', session('agency_name'))
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-        <a class="navbar-brand" href="{{ route('dashboard') }}">
-            📦 Beto Cargo Connect
-        </a>
-
-        <div class="navbar-nav">
-            <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
-            <a class="nav-link" href="{{ route('customers.index') }}">Clients</a>
-            <a class="nav-link" href="{{ route('packages.index') }}">Colis</a>
-            <a class="nav-link" href="{{ route('packages.create') }}">Ajouter colis</a>
-
-            <form method="POST" action="{{ route('logout') }}" class="d-inline">
-                @csrf
-                <button type="submit" class="nav-link btn btn-link border-0 text-decoration-none">
-                    Déconnexion
-                </button>
-            </form>
-
-        </div>
-    </div>
-</nav>
+@section('content')
 
 <div class="container mt-5">
 
-    <div class="mb-4">
-        <h1>Beto Cargo Connect</h1>
-        <p class="text-muted">
-            Tableau de bord logistique de {{ session('agency_name') }}
+    <div class="page-header mb-4">
+
+        <h1 class="display-6 fw-bold mb-1">
+            {{ session('agency_name') }}
+        </h1>
+
+        <p class="text-secondary mb-2">
+            Cargo Management Portal
         </p>
 
-        @if(session('agency_name'))
-            <div class="alert alert-info">
-                Agence active : <strong>{{ session('agency_name') }}</strong>
-            </div>
+        @if(session('agency_website'))
+            <a href="{{ session('agency_website') }}"
+                target="_blank"
+                class="btn btn-outline-primary btn-sm">
+                🌐 Visiter le site web
+            </a>
         @endif
-        
+
     </div>
 
     <div class="row g-4">
@@ -116,5 +96,4 @@
 
 </div>
 
-</body>
-</html>
+@endsection

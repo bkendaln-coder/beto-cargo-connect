@@ -12,6 +12,7 @@ class Agency extends Model
         'slug',
         'phone',
         'email',
+        'website',
         'city',
         'country',
         'logo',

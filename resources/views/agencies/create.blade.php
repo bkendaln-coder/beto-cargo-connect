@@ -30,6 +30,21 @@
         </div>
 
         <div class="mb-3">
+            <label class="form-label">Site web</label>
+
+            <input
+                type="url"
+                name="website"
+                class="form-control"
+                placeholder="https://www.monagence.com">
+
+            <div class="form-text">
+                Facultatif. Ce lien sera affiché dans le portail de l'agence.
+            </div>
+        </div>
+
+
+        <div class="mb-3">
             <label class="form-label">Ville</label>
             <input type="text" name="city" class="form-control">
         </div>

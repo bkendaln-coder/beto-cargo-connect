@@ -17,6 +17,7 @@ class DashboardController extends Controller
             session([
                 'agency_id' => auth()->user()->agency_id,
                 'agency_name' => auth()->user()->agency->name,
+                'agency_website' => auth()->user()->agency->website,
             ]);
         }
         

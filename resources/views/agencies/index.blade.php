@@ -1,80 +1,99 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Agences - Beto Cargo Connect</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
+@extends('layouts.agency')
 
-<body class="bg-light">
+@section('title', 'Agences')
 
-<div class="container">
+@section('content')
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex justify-content-between align-items-center mb-4">
 
-        <h1>Agences</h1>
-
-        <a href="{{ route('agencies.create') }}" class="btn btn-primary">
-            + Nouvelle agence
-        </a>
-
+    <div>
+        <h1 class="mb-1">Agences</h1>
+        <p class="text-muted mb-0">
+            Gestion des agences
+        </p>
     </div>
 
-    @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    <table class="table table-bordered">
-
-        <thead>
-            <tr>
-                <th>Nom</th>
-                <th>Ville</th>
-                <th>Pays</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-
-        <tbody>
-
-        @forelse($agencies as $agency)
-
-            <tr>
-
-                <td>{{ $agency->name }}</td>
-
-                <td>{{ $agency->city }}</td>
-
-                <td>{{ $agency->country }}</td>
-
-                <td>
-                    <a href="{{ route('agencies.select', $agency) }}" class="btn btn-success btn-sm">
-                        Entrer
-                    </a>
-
-                    <a href="{{ route('agencies.edit', $agency) }}" class="btn btn-warning btn-sm">
-                        Modifier
-                    </a>
-                </td>
-
-            </tr>
-
-        @empty
-
-            <tr>
-                <td colspan="3" class="text-center">
-                    Aucune agence enregistrée.
-                </td>
-            </tr>
-
-        @endforelse
-
-        </tbody>
-
-    </table>
+    <a href="{{ route('agencies.create') }}" class="btn btn-primary">
+        + Nouvelle agence
+    </a>
 
 </div>
 
-</body>
-</html>
+@if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
+
+<div class="card shadow-sm">
+
+    <div class="card-header bg-dark text-white">
+        Liste des agences
+    </div>
+
+    <div class="card-body p-0">
+
+        <div class="table-responsive">
+
+            <table class="table table-striped table-hover mb-0">
+
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Ville</th>
+                        <th>Pays</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                @forelse($agencies as $agency)
+
+                    <tr>
+
+                        <td>{{ $agency->name }}</td>
+
+                        <td>{{ $agency->city }}</td>
+
+                        <td>{{ $agency->country }}</td>
+
+                        <td class="text-nowrap">
+
+                            <a
+                                href="{{ route('agencies.select', $agency) }}"
+                                class="btn btn-success btn-sm">
+                                Entrer
+                            </a>
+
+                            <a
+                                href="{{ route('agencies.edit', $agency) }}"
+                                class="btn btn-warning btn-sm">
+                                Modifier
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                @empty
+
+                    <tr>
+                        <td colspan="4" class="text-center text-muted">
+                            Aucune agence enregistrée.
+                        </td>
+                    </tr>
+
+                @endforelse
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+@endsection

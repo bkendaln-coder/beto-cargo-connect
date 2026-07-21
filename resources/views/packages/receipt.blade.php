@@ -2,16 +2,49 @@
 <html>
 
 <head>
-    <title>Reçu de dépôt</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>
+        Reçu de dépôt - {{ $package->agency->name }}
+    </title>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1">
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
 
     <style>
-        @media print {
-            .no-print {
-                display: none;
-            }
+
+        body{
+            background:#f5f7fa;
         }
+
+        .receipt-card{
+            max-width:850px;
+            margin:auto;
+        }
+
+        @media print{
+
+            .no-print{
+                display:none;
+            }
+
+            body{
+                background:white;
+            }
+
+            .receipt-card{
+                box-shadow:none !important;
+                border:none !important;
+            }
+
+        }
+
     </style>
 
 </head>
@@ -20,13 +53,21 @@
 
 <div class="container mt-5">
 
-    <div class="card shadow">
+    <div class="card shadow receipt-card">
 
         <div class="card-body">
 
             <div class="text-center mb-4">
 
                 <h2>🚢 {{ $package->agency->name }}</h2>
+
+                @if($package->agency->website)
+
+                <p class="text-muted">
+                    {{ $package->agency->website }}
+                </p>
+
+                @endif
 
                 <h4>{{ $package->agency->city }} - {{ $package->agency->country }}</h4>
 

@@ -1,67 +1,115 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Nouvelle agence - Beto Cargo Connect</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
+@extends('layouts.agency')
 
-<body class="bg-light">
+@section('title', 'Nouvelle agence')
 
-<div class="container mt-5">
+@section('content')
 
-    <h1>Nouvelle agence</h1>
+<div class="mb-4">
+    <h1 class="mb-1">Nouvelle agence</h1>
+    <p class="text-muted mb-0">
+        Ajouter une nouvelle agence
+    </p>
+</div>
 
-    <form method="POST" action="{{ route('agencies.store') }}">
-        @csrf
+@if($errors->any())
+    <div class="alert alert-danger">
+        <ul class="mb-0">
+            @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 
-        <div class="mb-3">
-            <label class="form-label">Nom de l'agence</label>
-            <input type="text" name="name" class="form-control" required>
-        </div>
+<div class="card shadow-sm">
 
-        <div class="mb-3">
-            <label class="form-label">Téléphone</label>
-            <input type="text" name="phone" class="form-control">
-        </div>
+    <div class="card-header bg-primary text-white">
+        Informations de l'agence
+    </div>
 
-        <div class="mb-3">
-            <label class="form-label">Email</label>
-            <input type="email" name="email" class="form-control">
-        </div>
+    <div class="card-body">
 
-        <div class="mb-3">
-            <label class="form-label">Site web</label>
+        <form method="POST" action="{{ route('agencies.store') }}">
+            @csrf
 
-            <input
-                type="url"
-                name="website"
-                class="form-control"
-                placeholder="https://www.monagence.com">
+            <div class="mb-3">
+                <label class="form-label">Nom de l'agence</label>
 
-            <div class="form-text">
-                Facultatif. Ce lien sera affiché dans le portail de l'agence.
+                <input
+                    type="text"
+                    name="name"
+                    value="{{ old('name') }}"
+                    class="form-control"
+                    required>
             </div>
-        </div>
 
+            <div class="mb-3">
+                <label class="form-label">Téléphone</label>
 
-        <div class="mb-3">
-            <label class="form-label">Ville</label>
-            <input type="text" name="city" class="form-control">
-        </div>
+                <input
+                    type="text"
+                    name="phone"
+                    value="{{ old('phone') }}"
+                    class="form-control">
+            </div>
 
-        <div class="mb-3">
-            <label class="form-label">Pays</label>
-            <input type="text" name="country" class="form-control">
-        </div>
+            <div class="mb-3">
+                <label class="form-label">Email</label>
 
-        <button type="submit" class="btn btn-primary">Enregistrer</button>
+                <input
+                    type="email"
+                    name="email"
+                    value="{{ old('email') }}"
+                    class="form-control">
+            </div>
 
-        <a href="{{ route('agencies.index') }}" class="btn btn-secondary">
-            Annuler
-        </a>
-    </form>
+            <div class="mb-3">
+                <label class="form-label">Site web</label>
+
+                <input
+                    type="url"
+                    name="website"
+                    value="{{ old('website') }}"
+                    class="form-control"
+                    placeholder="https://www.monagence.com">
+
+                <div class="form-text">
+                    Facultatif. Ce lien sera affiché dans le portail de l'agence.
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Ville</label>
+
+                <input
+                    type="text"
+                    name="city"
+                    value="{{ old('city') }}"
+                    class="form-control">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Pays</label>
+
+                <input
+                    type="text"
+                    name="country"
+                    value="{{ old('country') }}"
+                    class="form-control">
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                Enregistrer
+            </button>
+
+            <a href="{{ route('agencies.index') }}" class="btn btn-secondary">
+                Annuler
+            </a>
+
+        </form>
+
+    </div>
 
 </div>
 
-</body>
-</html>
+@endsection

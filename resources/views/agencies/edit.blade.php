@@ -1,97 +1,116 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Modifier une agence - Beto Cargo Connect</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
+@extends('layouts.agency')
 
-<body class="bg-light">
+@section('title', 'Modifier une agence')
 
-<div class="container mt-5">
+@section('content')
 
-    <h1>Modifier l'agence</h1>
+<div class="mb-4">
+    <h1 class="mb-1">Modifier une agence</h1>
+    <p class="text-muted mb-0">
+        Mettre à jour les informations de l'agence
+    </p>
+</div>
 
-    @if($errors->any())
-        <div class="alert alert-danger">
-            <ul class="mb-0">
-                @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
+@if($errors->any())
+    <div class="alert alert-danger">
+        <ul class="mb-0">
+            @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 
-    <form method="POST" action="{{ route('agencies.update', $agency) }}">
-        @csrf
-        @method('PUT')
+<div class="card shadow-sm">
 
-        <div class="mb-3">
-            <label class="form-label">Nom de l'agence</label>
-            <input
-                type="text"
-                name="name"
-                class="form-control"
-                value="{{ old('name', $agency->name) }}"
-                required>
-        </div>
+    <div class="card-header bg-primary text-white">
+        Informations de l'agence
+    </div>
 
-        <div class="mb-3">
-            <label class="form-label">Téléphone</label>
-            <input
-                type="text"
-                name="phone"
-                class="form-control"
-                value="{{ old('phone', $agency->phone) }}">
-        </div>
+    <div class="card-body">
 
-        <div class="mb-3">
-            <label class="form-label">Email</label>
-            <input
-                type="email"
-                name="email"
-                class="form-control"
-                value="{{ old('email', $agency->email) }}">
-        </div>
+        <form method="POST" action="{{ route('agencies.update', $agency) }}">
+            @csrf
+            @method('PUT')
 
-        <div class="mb-3">
-            <label class="form-label">Site web</label>
-            <input
-                type="url"
-                name="website"
-                class="form-control"
-                value="{{ old('website', $agency->website) }}"
-                placeholder="https://www.monagence.com">
-        </div>
+            <div class="mb-3">
+                <label class="form-label">Nom de l'agence</label>
 
-        <div class="mb-3">
-            <label class="form-label">Ville</label>
-            <input
-                type="text"
-                name="city"
-                class="form-control"
-                value="{{ old('city', $agency->city) }}">
-        </div>
+                <input
+                    type="text"
+                    name="name"
+                    value="{{ old('name', $agency->name) }}"
+                    class="form-control"
+                    required>
+            </div>
 
-        <div class="mb-3">
-            <label class="form-label">Pays</label>
-            <input
-                type="text"
-                name="country"
-                class="form-control"
-                value="{{ old('country', $agency->country) }}">
-        </div>
+            <div class="mb-3">
+                <label class="form-label">Téléphone</label>
 
-        <button type="submit" class="btn btn-primary">
-            Enregistrer
-        </button>
+                <input
+                    type="text"
+                    name="phone"
+                    value="{{ old('phone', $agency->phone) }}"
+                    class="form-control">
+            </div>
 
-        <a href="{{ route('agencies.index') }}" class="btn btn-secondary">
-            Annuler
-        </a>
+            <div class="mb-3">
+                <label class="form-label">Email</label>
 
-    </form>
+                <input
+                    type="email"
+                    name="email"
+                    value="{{ old('email', $agency->email) }}"
+                    class="form-control">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Site web</label>
+
+                <input
+                    type="url"
+                    name="website"
+                    value="{{ old('website', $agency->website) }}"
+                    class="form-control"
+                    placeholder="https://www.monagence.com">
+
+                <div class="form-text">
+                    Facultatif. Ce lien sera affiché dans le portail de l'agence.
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Ville</label>
+
+                <input
+                    type="text"
+                    name="city"
+                    value="{{ old('city', $agency->city) }}"
+                    class="form-control">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Pays</label>
+
+                <input
+                    type="text"
+                    name="country"
+                    value="{{ old('country', $agency->country) }}"
+                    class="form-control">
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                Enregistrer les modifications
+            </button>
+
+            <a href="{{ route('agencies.index') }}" class="btn btn-secondary">
+                Annuler
+            </a>
+
+        </form>
+
+    </div>
 
 </div>
 
-</body>
-</html>
+@endsection

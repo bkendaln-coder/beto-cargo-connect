@@ -1,72 +1,54 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Clients - Beto Cargo Connect</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
+@extends('layouts.agency')
 
-<body class="bg-light">
+@section('title', 'Clients')
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-        <a class="navbar-brand" href="{{ route('dashboard') }}">
-            📦 Beto Cargo Connect
-        </a>
+@section('content')
 
-        <div class="navbar-nav">
-            <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
-            <a class="nav-link" href="{{ route('customers.index') }}">Clients</a>
-            <a class="nav-link" href="{{ route('packages.index') }}">Colis</a>
-            <a class="nav-link" href="{{ route('packages.create') }}">Ajouter colis</a>
-        </div>
-    </div>
-</nav>
-
-<div class="container mt-5">
-
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h1>Beto Cargo Connect</h1>
-            <p class="text-muted">Gestion des clients</p>
-        </div>
-
-        <a href="{{ route('customers.create') }}" class="btn btn-primary">
-            + Ajouter un client
-        </a>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="mb-1">Clients</h1>
+        <p class="text-muted mb-0">Gestion des clients</p>
     </div>
 
-    @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
+    <a href="{{ route('customers.create') }}" class="btn btn-primary">
+        + Ajouter un client
+    </a>
+</div>
 
-    <div class="card shadow-sm">
-        <div class="card-header bg-dark text-white">
-            Liste des clients
-        </div>
+@if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
 
-        <div class="card-body">
+<div class="card shadow-sm">
+    <div class="card-header bg-dark text-white">
+        Liste des clients
+    </div>
 
-            <form method="GET" action="{{ route('customers.index') }}" class="mb-4">
-                <div class="row g-2">
-                    <div class="col-md-10">
-                        <input type="text"
-                               name="search"
-                               value="{{ $search ?? '' }}"
-                               class="form-control"
-                               placeholder="Rechercher par nom, téléphone, email, ville ou pays">
-                    </div>
+    <div class="card-body">
 
-                    <div class="col-md-2">
-                        <button type="submit" class="btn btn-primary w-100">
-                            Rechercher
-                        </button>
-                    </div>
+        <form method="GET" action="{{ route('customers.index') }}" class="mb-4">
+            <div class="row g-2">
+                <div class="col-md-10">
+                    <input
+                        type="text"
+                        name="search"
+                        value="{{ $search ?? '' }}"
+                        class="form-control"
+                        placeholder="Rechercher par nom, téléphone, email, ville ou pays">
                 </div>
-            </form>
 
-            <table class="table table-striped table-hover">
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        Rechercher
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-hover mb-0">
                 <thead>
                     <tr>
                         <th>Prénom</th>
@@ -97,17 +79,15 @@
                     @endforelse
                 </tbody>
             </table>
-
         </div>
+
     </div>
+</div>
 
-    <br>
-
+<div class="mt-4">
     <a href="{{ route('packages.index') }}" class="btn btn-outline-secondary">
         Voir les colis
     </a>
-
 </div>
 
-</body>
-</html>
+@endsection

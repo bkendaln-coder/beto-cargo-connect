@@ -1,74 +1,56 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Colis - Beto Cargo Connect</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
+@extends('layouts.agency')
 
-<body class="bg-light">
+@section('title', 'Colis')
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-        <a class="navbar-brand" href="{{ route('dashboard') }}">
-            📦 Beto Cargo Connect
-        </a>
+@section('content')
 
-        <div class="navbar-nav">
-            <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
-            <a class="nav-link" href="{{ route('customers.index') }}">Clients</a>
-            <a class="nav-link" href="{{ route('packages.index') }}">Colis</a>
-            <a class="nav-link" href="{{ route('packages.create') }}">Ajouter colis</a>
-        </div>
-    </div>
-</nav>
-
-<div class="container mt-5">
-
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h1 class="mb-0">Beto Cargo Connect</h1>
-            <p class="text-muted">
-                Gestion des colis de {{ session('agency_name') }}
-            </p>
-        </div>
-
-        <a href="{{ route('packages.create') }}" class="btn btn-primary">
-            + Ajouter un colis
-        </a>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="mb-1">Colis</h1>
+        <p class="text-muted mb-0">
+            Gestion des colis
+        </p>
     </div>
 
-    @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
+    <a href="{{ route('packages.create') }}" class="btn btn-primary">
+        + Ajouter un colis
+    </a>
+</div>
 
-    <div class="card shadow-sm">
-        <div class="card-header bg-dark text-white">
-            Liste des colis
-        </div>
+@if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
 
-        <div class="card-body">
+<div class="card shadow-sm">
+    <div class="card-header bg-dark text-white">
+        Liste des colis
+    </div>
 
-            <form method="GET" action="{{ route('packages.index') }}" class="mb-4">
-                <div class="row g-2">
-                    <div class="col-md-10">
-                        <input type="text"
-                            name="search"
-                            value="{{ $search ?? '' }}"
-                            class="form-control"
-                            placeholder="Rechercher par tracking, client, origine ou destination">
-                    </div>
+    <div class="card-body">
 
-                    <div class="col-md-2">
-                        <button type="submit" class="btn btn-primary w-100">
-                            Rechercher
-                        </button>
-                    </div>
+        <form method="GET" action="{{ route('packages.index') }}" class="mb-4">
+            <div class="row g-2">
+                <div class="col-md-10">
+                    <input
+                        type="text"
+                        name="search"
+                        value="{{ $search ?? '' }}"
+                        class="form-control"
+                        placeholder="Rechercher par tracking, client, origine ou destination">
                 </div>
-            </form>
 
-            <table class="table table-striped table-hover align-middle">
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        Rechercher
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle mb-0">
                 <thead>
                     <tr>
                         <th>Tracking</th>
@@ -88,10 +70,13 @@
                         <tr>
                             <td>
                                 <strong>{{ $package->tracking_number }}</strong><br>
-                                <a href="{{ route('packages.track', [
-                                    'agency' => $package->agency->slug,
-                                    'tracking_number' => $package->tracking_number,
-                                ]) }}" target="_blank">
+
+                                <a
+                                    href="{{ route('packages.track', [
+                                        'agency' => $package->agency->slug,
+                                        'tracking_number' => $package->tracking_number,
+                                    ]) }}"
+                                    target="_blank">
                                     Suivi public
                                 </a>
                             </td>
@@ -131,44 +116,46 @@
                                 @elseif($package->status == 'delivered')
                                     <span class="badge bg-success">🟢 Livré</span>
                                 @else
-                                    <span class="badge bg-secondary">{{ $package->status }}</span>
+                                    <span class="badge bg-secondary">
+                                        {{ $package->status }}
+                                    </span>
                                 @endif
                             </td>
 
                             <td>
-                                <a href="{{ route('packages.edit', $package->id) }}" class="btn btn-sm btn-outline-primary">
-                                    Modifier
-                                </a>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <a
+                                        href="{{ route('packages.edit', $package) }}"
+                                        class="btn btn-sm btn-outline-primary">
+                                        Modifier
+                                    </a>
 
-                                <a href="{{ route('packages.receipt', $package->id) }}"
-                                    class="btn btn-success btn-sm">
+                                    <a
+                                        href="{{ route('packages.receipt', $package) }}"
+                                        class="btn btn-sm btn-success">
+                                        Reçu
+                                    </a>
 
-                                    Reçu
-
-                                </a>
-
-                                <a
-                                    href="https://wa.me/?text={{ urlencode(
-                                        'Bonjour ' .
-                                        $package->customer->first_name .
-                                        ', votre colis ' .
-                                        $package->tracking_number .
-                                        ' a été enregistré chez ' .
-                                        $package->agency->name .
-                                        '.' .
-                                        "\n\nSuivi : " .
-                                        route('packages.track', [
-                                            'agency' => $package->agency->slug,
-                                            'tracking_number' => $package->tracking_number,
-                                        ])
-                                    ) }}"
-                                    target="_blank"
-                                    class="btn btn-success btn-sm">
-
-                                    WhatsApp
-
-                                </a>
-
+                                    <a
+                                        href="https://wa.me/?text={{ urlencode(
+                                            'Bonjour ' .
+                                            $package->customer->first_name .
+                                            ', votre colis ' .
+                                            $package->tracking_number .
+                                            ' a été enregistré chez ' .
+                                            $package->agency->name .
+                                            '.' .
+                                            "\n\nSuivi : " .
+                                            route('packages.track', [
+                                                'agency' => $package->agency->slug,
+                                                'tracking_number' => $package->tracking_number,
+                                            ])
+                                        ) }}"
+                                        target="_blank"
+                                        class="btn btn-sm btn-success">
+                                        WhatsApp
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                     @empty
@@ -181,15 +168,14 @@
                 </tbody>
             </table>
         </div>
+
     </div>
+</div>
 
-    <br>
-
+<div class="mt-4">
     <a href="{{ route('customers.index') }}" class="btn btn-outline-secondary">
         Voir les clients
     </a>
-
 </div>
 
-</body>
-</html>
+@endsection
